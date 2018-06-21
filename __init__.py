@@ -116,9 +116,44 @@ class ScoreSkill(MycroftSkill):
             elif self.result == 'losing':
                 self.result = 'lost'
 
+    def team_name_parser(self):
+        """Parses 'official' team name based on spoken name."""
+        team_nicks = {"Orioles": ["Orioles", "O's"],
+                    "Red Sox": ["Red Sox"],
+                    "Yankees": ["Yankees", "Yanks", "Bronx Bombers", "Bombers", "Evil Empire"],
+                    "Rays": ["Rays", "Devil Rays"],
+                    "Blue Jays": ["Blue Jays", "Jays"],
+                    "White Sox": ["White Sox"],
+                    "Indians": ["Indians", "Tribe", "Wahoos"],
+                    "Tigers": ["Tigers", "Tigers"],
+                    "Royals": ["Royals"],
+                    "Twins": ["Twins"],
+                    "Astros": ["Astros", "'Stros"],
+                    "Angels": ["Angels", "Halos"],
+                    "Athletics": ["Athletics", "A's"],
+                    "Mariners": ["Mariners", "M's"],
+                    "Rangers": ["Rangers"],
+                    "Braves": ["Braves", "Bravos"],
+                    "Marlins": ["Marlins", "Fish"],
+                    "Mets": ["Mets"],
+                    "Phillies": ["Phillies", "Phils"],
+                    "Nationals": ["Nationals", "Nats"],
+                    "Cubs": ["Cubs", "Cubbies"],
+                    "Reds": ["Reds"],
+                    "Brewers": ["Brewers"],
+                    "Pirates": ["Pirates", "Bucs", "Buccos"],
+                    "Cardinals": ["Cardinals", "Cards", "Red Birds"],
+                    "D-backs": ["D-backs", "Diamondbacks", "Snakes", "Rattlesnakes"],
+                    "Rockies": ["Rockies", "Rox"],
+                    "Dodgers": ["Dodgers"],
+                    "Padres": ["Padres", "Friars"],
+                    "Giants": ["Giants"]}
+        self.team = [t for t in team_nicks if self.team in team_nicks[t]][0]
+
     @ intent_handler(IntentBuilder("GetLiveScoreIntent").require("Team").require("Score").build())
     def handle_live_score_intent(self, message):
         self.team = message.data.get("Team")
+        self.team_name_parser()
         self.get_result()
         if self.game.game_status == 'IN_PROGRESS':
             # "The {{team}} are {{result}} {{team_score}} to {{opponent_score}} against the {{opponent}} in the {{inning_state}} of the {{inning}}
